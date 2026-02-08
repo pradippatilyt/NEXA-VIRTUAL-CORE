@@ -1,0 +1,481 @@
+package com.nexa.awesome.app;
+
+import android.app.Activity;
+import android.app.Application;
+import android.app.Instrumentation;
+import android.app.Service;
+import android.app.job.JobService;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.ContentProviderClient;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.ProviderInfo;
+import android.content.pm.ServiceInfo;
+import android.os.Binder;
+import android.os.Build;
+import android.os.ConditionVariable;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.IInterface;
+import android.os.Looper;
+import android.os.RemoteException;
+import android.os.StrictMode;
+import android.text.TextUtils;
+import android.util.Log;
+
+import java.lang.reflect.Method;
+import java.security.Security;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import black.android.app.ActivityThreadAppBindDataContext;
+import black.android.app.BRActivity;
+import black.android.app.BRActivityManagerNative;
+import black.android.app.BRActivityThread;
+import black.android.app.BRActivityThreadActivityClientRecord;
+import black.android.app.BRActivityThreadAppBindData;
+import black.android.app.BRActivityThreadNMR1;
+import black.android.app.BRActivityThreadQ;
+import black.android.app.BRContextImpl;
+import black.android.app.BRLoadedApk;
+import black.android.app.BRService;
+import black.android.content.BRBroadcastReceiver;
+import black.android.content.BRContentProviderClient;
+import black.android.graphics.BRCompatibility;
+import black.android.security.net.config.BRNetworkSecurityConfigProvider;
+import black.com.android.internal.content.BRReferrerIntent;
+import black.dalvik.system.BRVMRuntime;
+
+import com.nexa.awesome.NexaCore;
+import com.nexa.awesome.app.configuration.AppLifecycleCallback;
+import com.nexa.awesome.app.dispatcher.AppServiceDispatcher;
+import com.nexa.awesome.core.CrashHandler;
+import com.nexa.awesome.core.IBActivityThread;
+import com.nexa.awesome.core.IOCore;
+import com.nexa.awesome.core.NativeCore;
+import com.nexa.awesome.core.env.VirtualRuntime;
+import com.nexa.awesome.core.system.user.BUserHandle;
+import com.nexa.awesome.entity.AppConfig;
+import com.nexa.awesome.entity.am.ReceiverData;
+import com.nexa.awesome.entity.pm.InstalledModule;
+import com.nexa.awesome.fake.delegate.AppInstrumentation;
+import com.nexa.awesome.fake.delegate.ContentProviderDelegate;
+import com.nexa.awesome.fake.frameworks.BXposedManager;
+import com.nexa.awesome.fake.hook.HookManager;
+import com.nexa.awesome.fake.service.HCallbackStub;
+import com.nexa.awesome.utils.FixCrashHelper;
+import com.nexa.awesome.utils.Reflector;
+import com.nexa.awesome.utils.Slog;
+import com.nexa.awesome.utils.compat.ActivityManagerCompat;
+import com.nexa.awesome.utils.compat.BuildCompat;
+import com.nexa.awesome.utils.compat.ContextCompat;
+import com.nexa.awesome.utils.compat.StrictModeCompat;
+
+public class BActivityThread extends IBActivityThread.Stub {
+    public static final String TAG = "BActivityThread";
+    private static final Object mConfigLock = new Object();
+    private static volatile BActivityThread sBActivityThread;
+    private AppConfig mAppConfig;
+    private AppBindData mBoundApplication;
+    private Application mInitialApplication;
+    private final List<ProviderInfo> mProviders = new ArrayList<>();
+    private final Handler mH = NexaCore.get().getHandler();
+
+    public static class AppBindData {
+        ApplicationInfo appInfo;
+        Object info;
+        String processName;
+        List<ProviderInfo> providers;
+    }
+
+    public static boolean isThreadInit() {
+        return sBActivityThread != null;
+    }
+
+    public static BActivityThread currentActivityThread() {
+        if (sBActivityThread == null) {
+            synchronized (BActivityThread.class) {
+                if (sBActivityThread == null) {
+                    sBActivityThread = new BActivityThread();
+                }
+            }
+        }
+        return sBActivityThread;
+    }
+
+    public static AppConfig getAppConfig() {
+        synchronized (mConfigLock) {
+            return currentActivityThread().mAppConfig;
+        }
+    }
+
+    public static List<ProviderInfo> getProviders() {
+        return currentActivityThread().mProviders;
+    }
+
+    public static String getAppProcessName() {
+        if (getAppConfig() != null) return getAppConfig().processName;
+        if (currentActivityThread().mBoundApplication != null) return currentActivityThread().mBoundApplication.processName;
+        return null;
+    }
+
+    public static String getAppPackageName() {
+        if (getAppConfig() != null) return getAppConfig().packageName;
+        if (currentActivityThread().mInitialApplication != null) return currentActivityThread().mInitialApplication.getPackageName();
+        return null;
+    }
+
+    public static Application getApplication() {
+        return currentActivityThread().mInitialApplication;
+    }
+
+    public static int getAppPid() {
+        return getAppConfig() == null ? -1 : getAppConfig().bpid;
+    }
+
+    public static int getBUid() {
+        return getAppConfig() == null ? BUserHandle.AID_APP_START : getAppConfig().buid;
+    }
+
+    public static int getBAppId() {
+        return BUserHandle.getAppId(NexaCore.getHostUid());
+    }
+
+    public static int getCallingBUid() {
+        return getAppConfig() == null ? NexaCore.getHostUid() : getAppConfig().callingBUid;
+    }
+
+    public static int getUid() {
+        return getAppConfig() == null ? -1 : getAppConfig().uid;
+    }
+
+    public static int getUserId() {
+        return getAppConfig() == null ? 0 : getAppConfig().userId;
+    }
+
+    public void initProcess(AppConfig appConfig) {
+        synchronized (mConfigLock) {
+            if (this.mAppConfig != null && !this.mAppConfig.packageName.equals(appConfig.packageName)) {
+                throw new RuntimeException("reject init process: " + appConfig.processName + ", this process is : " + this.mAppConfig.processName);
+            }
+            this.mAppConfig = appConfig;
+            final IBinder iBinder = asBinder();
+            try {
+                iBinder.linkToDeath(new IBinder.DeathRecipient() {
+                        @Override
+                        public void binderDied() {
+                            synchronized (BActivityThread.mConfigLock) {
+                                try {
+                                    iBinder.linkToDeath(this, 0);
+                                } catch (RemoteException e) {
+                                    // ignore
+                                }
+                                BActivityThread.this.mAppConfig = null;
+                            }
+                        }
+                    }, 0);
+
+            } catch (RemoteException e) {
+                Log.e(TAG, "error", e);
+            }
+        }
+    }
+
+    public boolean isInit() {
+        return this.mBoundApplication != null;
+    }
+
+    public Service createService(ServiceInfo serviceInfo, IBinder token) {
+        if (!isInit()) bindApplication(serviceInfo.packageName, serviceInfo.processName);
+        try {
+            Service service = (Service) BRLoadedApk.get(this.mBoundApplication.info).getClassLoader().loadClass(serviceInfo.name).newInstance();
+            Context context = NexaCore.getContext().createPackageContext(serviceInfo.packageName, Context.CONTEXT_INCLUDE_CODE | Context.CONTEXT_IGNORE_SECURITY);
+            BRContextImpl.get(context).setOuterContext(service);
+            BRService.get(service).attach(context, NexaCore.mainThread(), serviceInfo.name,token, this.mInitialApplication, BRActivityManagerNative.get().getDefault());
+            ContextCompat.fix(context);
+            service.onCreate();
+            return service;
+        } catch (Exception e) {
+            Log.e(TAG, "error", e);
+            throw new RuntimeException("Unable to create service " + serviceInfo.name, e);
+        }
+    }
+
+    public JobService createJobService(ServiceInfo serviceInfo) {
+        if (!isInit()) bindApplication(serviceInfo.packageName, serviceInfo.processName);
+        try {
+            JobService service = (JobService) BRLoadedApk.get(this.mBoundApplication.info).getClassLoader().loadClass(serviceInfo.name).newInstance();
+            Context context = NexaCore.getContext().createPackageContext(serviceInfo.packageName, Context.CONTEXT_INCLUDE_CODE | Context.CONTEXT_IGNORE_SECURITY);
+            BRContextImpl.get(context).setOuterContext(service);
+            BRService.get(service).attach(context, NexaCore.mainThread(), serviceInfo.name,getActivityThread(), this.mInitialApplication, BRActivityManagerNative.get().getDefault());
+            ContextCompat.fix(context);
+            service.onCreate();
+            service.onBind(null);
+            return service;
+        } catch (Exception e) {
+            Log.e(TAG, "error", e);
+            throw new RuntimeException("Unable to create JobService " + serviceInfo.name, e);
+        }
+    }
+
+    public void bindApplication(final String packageName, final String processName) {
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            final ConditionVariable conditionVariable = new ConditionVariable();
+            NexaCore.get().getHandler().post(() -> {
+                handleBindApplication(packageName, processName);
+                conditionVariable.open();
+            });
+            conditionVariable.block();
+        } else {
+            handleBindApplication(packageName, processName);
+        }
+    }
+
+    public synchronized void handleBindApplication(String packageName, String processName) {
+        if (isInit()) return;
+        try {
+            CrashHandler.create();
+        } catch (Throwable ignored) {}
+        try {
+            PackageInfo packageInfo = NexaCore.getBPackageManager().getPackageInfo(packageName, 8, getUserId());
+            ApplicationInfo applicationInfo = packageInfo.applicationInfo;
+            if (packageInfo.providers == null) packageInfo.providers = new ProviderInfo[0];
+            mProviders.addAll(Arrays.asList(packageInfo.providers));
+            Object boundApplication = BRActivityThread.get(NexaCore.mainThread()).mBoundApplication();
+            Context packageContext = createPackageContext(applicationInfo);
+            Object loadedApk = BRContextImpl.get(packageContext).mPackageInfo();
+            BRLoadedApk.get(loadedApk)._set_mSecurityViolation(false);
+            BRLoadedApk.get(loadedApk)._set_mApplicationInfo(applicationInfo);
+            if (applicationInfo.targetSdkVersion < 9) {
+                StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder(StrictMode.getThreadPolicy()).permitNetwork().build());
+            }
+            if (Build.VERSION.SDK_INT >= 24 && applicationInfo.targetSdkVersion < 24) {
+                StrictModeCompat.disableDeathOnFileUriExposure();
+            }
+            VirtualRuntime.setupRuntime(processName, applicationInfo);
+            BRVMRuntime.get(BRVMRuntime.get().getRuntime()).setTargetSdkVersion(applicationInfo.targetSdkVersion);
+            if (BuildCompat.isS()) BRCompatibility.get().setTargetSdkVersion(applicationInfo.targetSdkVersion);
+            if (packageContext != null) IOCore.get().enableRedirect(packageContext);
+            AppBindData bindData = new AppBindData();
+            bindData.appInfo = applicationInfo;
+            bindData.processName = processName;
+            bindData.info = loadedApk;
+            bindData.providers = mProviders;
+            ActivityThreadAppBindDataContext dataCtx = BRActivityThreadAppBindData.get(boundApplication);
+            dataCtx._set_instrumentationName(new ComponentName(applicationInfo.packageName, Instrumentation.class.getName()));
+            dataCtx._set_appInfo(applicationInfo);
+            dataCtx._set_info(loadedApk);
+            dataCtx._set_processName(processName);
+            dataCtx._set_providers(mProviders);
+            mBoundApplication = bindData;
+            if (BRNetworkSecurityConfigProvider.getRealClass() != null) {
+                Security.removeProvider("AndroidNSSP");
+                BRNetworkSecurityConfigProvider.get().install(packageContext);
+            }
+            onBeforeCreateApplication(packageName, processName, packageContext);
+            Application app = BRLoadedApk.get(loadedApk).makeApplication(false, null);
+            mInitialApplication = app;
+            BRActivityThread.get(NexaCore.mainThread())._set_mInitialApplication(app);
+            ContextCompat.fix((Context) BRActivityThread.get(NexaCore.mainThread()).getSystemContext());
+            ContextCompat.fix(app);
+            installProviders(app, processName, mProviders);
+            onBeforeApplicationOnCreate(packageName, processName, app);
+            AppInstrumentation.get().callApplicationOnCreate(app);
+            onAfterApplicationOnCreate(packageName, processName, app);
+            HookManager.get().checkEnv(HCallbackStub.class);
+        } catch (Exception e) {
+            Log.e(TAG, "error", e);
+            throw new RuntimeException("Unable to makeApplication", e);
+        }
+    }
+
+    public static Context createPackageContext(ApplicationInfo info) {
+        try {
+            return NexaCore.getContext().createPackageContext(info.packageName, Context.CONTEXT_INCLUDE_CODE | Context.CONTEXT_IGNORE_SECURITY);
+        } catch (Exception e) {
+            Log.e(TAG, "error", e);
+            return null;
+        }
+    }
+
+    private void installProviders(Context context, String processName, List<ProviderInfo> providers) {
+        long origId = Binder.clearCallingIdentity();
+        try {
+            for (ProviderInfo providerInfo : providers) {
+                try {
+                    if (processName.equals(providerInfo.processName) ||
+                        providerInfo.processName.equals(context.getPackageName()) ||
+                        providerInfo.multiprocess) {
+                        installProvider(NexaCore.mainThread(), context, providerInfo, null);
+                    }
+                } catch (Throwable ignored) {}
+            }
+        } finally {
+            Binder.restoreCallingIdentity(origId);
+            ContentProviderDelegate.init();
+        }
+    }
+
+    public Object getPackageInfo() {
+        return this.mBoundApplication.info;
+    }
+
+    public static void installProvider(Object mainThread, Context context, ProviderInfo providerInfo, Object holder) {
+        Method installProvider = Reflector.findMethodByFirstName(mainThread.getClass(), "installProvider");
+        if (installProvider != null) {
+            installProvider.setAccessible(true);
+            try {
+                installProvider.invoke(mainThread, context, holder, providerInfo, false, true, true);
+            } catch (Exception ignored) {}
+        }
+    }
+    
+    public void loadXposed(Context context) {
+        String vPackageName = getAppPackageName();
+        String vProcessName = getAppProcessName();
+        BXposedManager xposedManager = BXposedManager.get();
+        if (!TextUtils.isEmpty(vPackageName) && !TextUtils.isEmpty(vProcessName) && 
+            xposedManager != null && xposedManager.isXPEnable()) {
+            boolean isFirstApplication = vPackageName.equals(vProcessName);
+            List<InstalledModule> installedModules = xposedManager.getInstalledModules();
+            if (installedModules != null) {
+                for (InstalledModule installedModule : installedModules) {
+                    if (installedModule == null || !installedModule.enable) {
+                        continue;
+                    }
+                    try {
+                        // Module loading code would go here
+                    } catch (Throwable e) {
+                        // Safe access to application info
+                        ApplicationInfo appInfo = installedModule.getApplication();
+                        String packageName = appInfo != null ? appInfo.packageName : "unknown";
+                        String sourceDir = appInfo != null ? appInfo.sourceDir : "unknown";
+
+                        String msg = "Failed to load Xposed module: " + packageName + " (" + sourceDir + ")\n" + android.util.Log.getStackTraceString(e);
+                        android.util.Log.e("BlackBoxXposed", msg);
+                    }
+                }
+            }
+        }
+        // Check if NexaCore.get() is not null
+        NexaCore nexaCore = NexaCore.get();
+        if (nexaCore != null && nexaCore.setHideXposed()) {
+            NativeCore.hideXposed();
+        }
+    }
+
+    @Override
+    public IBinder getActivityThread() {
+        return BRActivityThread.get(NexaCore.mainThread()).getApplicationThread();
+    }
+
+    @Override
+    public void bindApplication() {
+        if (!isInit()) bindApplication(getAppPackageName(), getAppProcessName());
+    }
+
+    @Override
+    public void stopService(Intent intent) {
+        AppServiceDispatcher.get().stopService(intent);
+    }
+
+    @Override
+    public void restartJobService(String selfId) {}
+
+    @Override
+    public IBinder acquireContentProviderClient(ProviderInfo providerInfo) {
+        if (!isInit()) bindApplication(getAppConfig().packageName, getAppConfig().processName);
+        for (String auth : providerInfo.authority.split(";")) {
+            ContentProviderClient client = NexaCore.getContext().getContentResolver().acquireContentProviderClient(auth);
+            IInterface iInterface = BRContentProviderClient.get(client).mContentProvider();
+            if (iInterface != null) return iInterface.asBinder();
+        }
+        return null;
+    }
+
+    @Override
+    public IBinder peekService(Intent intent) {
+        return AppServiceDispatcher.get().peekService(intent);
+    }
+
+    @Override
+    public void finishActivity(final IBinder token) {
+        mH.post(() -> {
+            Map<IBinder, Object> activities = BRActivityThread.get(NexaCore.mainThread()).mActivities();
+            Object clientRecord = activities.get(token);
+            if (clientRecord == null) return;
+            Activity activity = getActivityByToken(token);
+            while (activity.getParent() != null) activity = activity.getParent();
+            int resultCode = BRActivity.get(activity).mResultCode();
+            Intent resultData = BRActivity.get(activity).mResultData();
+            ActivityManagerCompat.finishActivity(token, resultCode, resultData);
+            BRActivity.get(activity)._set_mFinished(true);
+        });
+    }
+
+    @Override
+    public void handleNewIntent(final IBinder token, final Intent intent) {
+        mH.post(() -> {
+            Intent newIntent = BuildCompat.isLollipop_MR1() ? BRReferrerIntent.get()._new(intent, NexaCore.getHostPkg()) : intent;
+            Object mainThread = NexaCore.mainThread();
+            if (BRActivityThread.get(mainThread)._check_performNewIntents(null, null) != null) {
+                BRActivityThread.get(mainThread).performNewIntents(token, Collections.singletonList(newIntent));
+            } else if (BRActivityThreadNMR1.get(mainThread)._check_performNewIntents(null, null, false) != null) {
+                BRActivityThreadNMR1.get(mainThread).performNewIntents(token, Collections.singletonList(newIntent), true);
+            } else if (BRActivityThreadQ.get(mainThread)._check_handleNewIntent(null, null) != null) {
+                BRActivityThreadQ.get(mainThread).handleNewIntent(token, Collections.singletonList(newIntent));
+            }
+        });
+    }
+
+    @Override
+    public void scheduleReceiver(final ReceiverData data) {
+        if (!isInit()) bindApplication();
+        mH.post(() -> {
+            try {
+                Context baseContext = mInitialApplication.getBaseContext();
+                ClassLoader cl = baseContext.getClassLoader();
+                data.intent.setExtrasClassLoader(cl);
+                BroadcastReceiver receiver = (BroadcastReceiver) cl.loadClass(data.activityInfo.name).newInstance();
+                BRBroadcastReceiver.get(receiver).setPendingResult(data.data.build());
+                receiver.onReceive(baseContext, data.intent);
+                BroadcastReceiver.PendingResult finish = BRBroadcastReceiver.get(receiver).getPendingResult();
+                if (finish != null) finish.finish();
+                NexaCore.getBActivityManager().finishBroadcast(data.data);
+            } catch (Throwable e) {
+                Log.e(TAG, "error", e);
+                Slog.e(TAG, "Error receiving broadcast " + data.intent);
+            }
+        });
+    }
+
+    public static Activity getActivityByToken(IBinder token) {
+        Map<IBinder, Object> map = BRActivityThread.get(NexaCore.mainThread()).mActivities();
+        return BRActivityThreadActivityClientRecord.get(map.get(token)).activity();
+    }
+
+    private void onBeforeCreateApplication(String packageName, String processName, Context context) {
+        for (AppLifecycleCallback cb : NexaCore.get().getAppLifecycleCallbacks()) {
+            cb.beforeCreateApplication(packageName, processName, context, getUserId());
+        }
+    }
+
+    private void onBeforeApplicationOnCreate(String packageName, String processName, Application app) {
+        for (AppLifecycleCallback cb : NexaCore.get().getAppLifecycleCallbacks()) {
+            cb.beforeApplicationOnCreate(packageName, processName, app, getUserId());
+        }
+    }
+
+    private void onAfterApplicationOnCreate(String packageName, String processName, Application app) {
+        for (AppLifecycleCallback cb : NexaCore.get().getAppLifecycleCallbacks()) {
+            cb.afterApplicationOnCreate(packageName, processName, app, getUserId());
+        }
+    }
+}

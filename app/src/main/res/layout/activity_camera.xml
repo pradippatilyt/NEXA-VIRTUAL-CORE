@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF5F5F5"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#FFFFFFFF"
+        android:padding="20dp"
+        android:elevation="2dp">
+
+        <!-- Header Text -->
+        <TextView
+            android:id="@+id/protect_tip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Configure virtual camera settings and choose your preferred mode"
+            android:textSize="16sp"
+            android:textColor="#DE000000"
+            android:gravity="center"
+            android:lineSpacingMultiplier="1.2"
+            android:layout_marginBottom="24dp"
+            android:padding="8dp" />
+
+        <!-- Camera Mode Selection -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/protect_method_btn"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/abc_btn_colored_material"
+            android:text="Select Camera Mode"
+            android:textColor="#FFFFFFFF"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            app:icon="@drawable/ic_arrow_down_24dp"
+            app:iconTint="#FFFFFFFF" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/protect_method_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Not selected"
+            android:textSize="14sp"
+            android:textColor="#8A000000"
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
+
+        <!-- Video Input Section -->
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/protect_path"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:visibility="gone"
+            android:hint="Video path or URL"
+            android:textSize="14sp"
+            android:background="@drawable/abc_edit_text_material"
+            android:layout_marginTop="16dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/protect_video_select"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:visibility="gone"
+            android:background="@drawable/abc_btn_default_mtrl_shape"
+            android:text="Choose Video File"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            android:textColor="#FFFFFFFF"
+            android:layout_marginTop="8dp"
+            app:icon="@drawable/abc_ic_menu_share_mtrl_alpha" />
+
+        <!-- Audio Settings -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:layout_marginTop="16dp"
+            android:padding="12dp"
+            android:background="@drawable/abc_dialog_material_background"
+            android:id="@+id/audio_container">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/protect_audio"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:text="Enable Audio"
+                android:textColor="#DE000000"
+                android:layout_gravity="center_vertical" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/protect_audio_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical" />
+        </LinearLayout>
+
+        <!-- Preview Button -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_preview"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:visibility="gone"
+            android:background="@drawable/abc_btn_borderless_material"
+            android:text="Preview Video"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            android:textColor="#FF6200EE"
+            android:layout_marginTop="16dp" />
+
+        <!-- Action Buttons -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/protect_save"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="@drawable/abc_btn_colored_material"
+            android:text="Save Settings"
+            android:textSize="16sp"
+            android:textColor="#FFFFFFFF"
+            android:textStyle="bold"
+            android:layout_marginTop="24dp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_permissions"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/abc_btn_borderless_material"
+            android:text="Check Permissions"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            android:textColor="#FF6200EE"
+            android:layout_marginTop="12dp" />
+
+    </LinearLayout>
+</ScrollView>

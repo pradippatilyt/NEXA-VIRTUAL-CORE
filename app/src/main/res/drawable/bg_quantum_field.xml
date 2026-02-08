@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Deep Red/Black Base -->
+    <item>
+        <shape>
+            <solid android:color="#000000"/>
+        </shape>
+    </item>
+    
+    <!-- Red Nebula Overlay 1 (Top Left) -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="radial"
+                android:gradientRadius="800dp"
+                android:centerX="0.0"
+                android:centerY="0.0"
+                android:startColor="#44B71C1C"
+                android:centerColor="#22D50000"
+                android:endColor="#00000000" />
+        </shape>
+    </item>
+    
+    <!-- Red Nebula Overlay 2 (Bottom Right) -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="radial"
+                android:gradientRadius="800dp"
+                android:centerX="1.0"
+                android:centerY="1.0"
+                android:startColor="#33FF1744"
+                android:centerColor="#11B71C1C"
+                android:endColor="#00000000" />
+        </shape>
+    </item>
+    
+    <!-- Vector Grid Overlay (Red) -->
+    <item android:drawable="@drawable/ic_perspective_grid" />
+</layer-list>

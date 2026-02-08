@@ -1,0 +1,61 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.BlackBox" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary_dark</item>
+        <item name="colorOnPrimary">@color/primary_dark</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/accent</item>
+        <item name="colorSecondaryVariant">@color/primary</item>
+        <item name="colorOnSecondary">@color/primary_dark</item>
+        
+        <!-- Backgrounds -->
+        <item name="android:windowBackground">@color/background_dark</item>
+        <item name="colorSurface">@color/surface_dark</item>
+        <item name="colorOnSurface">@color/primary_text</item>
+        
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">@color/primary_dark</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        
+        <!-- Customize your theme here. -->
+        <item name="actionMenuTextColor">@color/primary</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+        
+        <!-- Text Colors -->
+        <item name="android:textColor">@color/primary_text</item>
+        <item name="android:textColorSecondary">@color/secondary_text</item>
+        
+        <!-- Red Popup Menu Style -->
+        <item name="android:popupMenuStyle">@style/RedPopupMenu</item>
+        <item name="popupMenuStyle">@style/RedPopupMenu</item>
+        <item name="subMenuArrow">@null</item>
+        
+        <!-- Force Overflow Menu Style -->
+        <item name="actionOverflowMenuStyle">@style/RedPopupMenu</item>
+        <item name="android:actionOverflowMenuStyle">@style/RedPopupMenu</item>
+        <item name="actionBarPopupTheme">@style/RedPopupMenu</item>
+    </style>
+
+    <style name="ToolBarColorStyle" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="actionMenuTextColor">@color/primary</item>
+        <item name="colorControlNormal">@color/primary</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+        <item name="android:background">@color/surface_dark</item>
+    </style>
+
+    <style name="WelcomeTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash</item>
+    </style>
+    
+    <!-- Custom Red/Black Popup Menu -->
+    <style name="RedPopupMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@drawable/bg_data_slate</item>
+        <item name="android:background">@drawable/bg_data_slate</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="overlapAnchor">false</item>
+        <item name="android:overlapAnchor">false</item>
+    </style>
+</resources>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Deep Void Base -->
+    <item>
+        <shape>
+            <solid android:color="#050510"/>
+        </shape>
+    </item>
+    
+    <!-- The "Brain" Glow - Top Right -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="radial"
+                android:gradientRadius="800dp"
+                android:centerX="1.0"
+                android:centerY="0.0"
+                android:startColor="#337C4DFF"
+                android:centerColor="#11448AFF"
+                android:endColor="#00000000" />
+        </shape>
+    </item>
+    
+    <!-- The "Data" Glow - Bottom Left -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="radial"
+                android:gradientRadius="600dp"
+                android:centerX="0.0"
+                android:centerY="1.0"
+                android:startColor="#2200E5FF"
+                android:centerColor="#117C4DFF"
+                android:endColor="#00000000" />
+        </shape>
+    </item>
+</layer-list>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/protect_method_disable_camera"
+        android:title="Disable Camera"/>
+    <item
+        android:id="@+id/protect_method_local"
+        android:title="Use Local Video"/>
+    <item
+        android:id="@+id/protect_method_network"
+        android:title="Use Network Video"/>
+</menu>

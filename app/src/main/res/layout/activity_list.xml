@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:app="http://schemas.android.com/apk/res-auto"
+     xmlns:tools="http://schemas.android.com/tools"
+     android:layout_height="match_parent"
+     android:layout_width="match_parent"
+     android:orientation="vertical"
+     tools:context=".view.list.ListActivity">
+
+    <FrameLayout
+         android:layout_height="wrap_content"
+         android:layout_width="match_parent">
+
+        <include
+             layout="@layout/view_toolbar"
+             app:layout_constraintTop_toTopOf="parent"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:id="@+id/toolbar_layout" />
+
+        <com.ferfalk.simplesearchview.SimpleSearchView
+             android:layout_height="match_parent"
+             android:layout_width="match_parent"
+             android:background="@color/primary"
+             app:type="card"
+             android:id="@+id/searchView" />
+
+    </FrameLayout>
+
+    <com.github.nukc.stateview.StateView
+         android:layout_height="match_parent"
+         android:layout_width="match_parent"
+         android:id="@+id/stateView" />
+
+    <androidx.recyclerview.widget.RecyclerView
+         android:layout_height="match_parent"
+         android:layout_width="match_parent"
+         app:layout_constraintTop_toBottomOf="@id/toolbar"
+         android:id="@+id/recyclerView" />
+
+</LinearLayout>

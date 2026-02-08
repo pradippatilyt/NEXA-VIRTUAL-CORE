@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Deep Dark Base -->
+    <item>
+        <shape>
+            <solid android:color="#050B14"/>
+        </shape>
+    </item>
+    
+    <!-- Grid Pattern Effect (Simulated with gradient) -->
+    <item>
+        <shape>
+            <gradient
+                android:type="linear"
+                android:angle="90"
+                android:startColor="#1000E5FF"
+                android:centerColor="#00000000"
+                android:endColor="#10D500F9" />
+        </shape>
+    </item>
+    
+    <!-- Tech Lines Overlay -->
+    <item android:top="100dp" android:bottom="100dp">
+        <rotate android:fromDegrees="45">
+            <shape>
+                <stroke android:width="1dp" android:color="#1A00E5FF" android:dashWidth="20dp" android:dashGap="10dp"/>
+            </shape>
+        </rotate>
+    </item>
+</layer-list>

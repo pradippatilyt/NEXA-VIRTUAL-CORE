@@ -1,0 +1,193 @@
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/C:/Users/HP/.gradle/wrapper/dists/gradle-8.5-bin/5t9huq95ubn472n8rpzujfbqh/gradle-8.5/lib/native-platform-0.22-milestone-25.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+
+> Configure project :app
+WARNING: The option setting 'android.experimental.legacyTransform.forceNonIncremental=true' is experimental.
+The current default is 'false'.
+
+> Configure project :vbox-sdk
+useNewCruncher has been deprecated. It will be removed in a future version of the gradle plugin. New cruncher is now always enabled.
+WARNING: DSL element 'android.lintOptions.check' is obsolete and has been replaced with 'android.lintOptions.checkOnly'.
+It will be removed in version 8.0 of the Android Gradle plugin.
+`check` has been renamed to `checkOnly` to make it clear that it will turn off all other checks than those explicitly listed. If that is what you actually intended, use `checkOnly`; otherwise switch to `enable`.
+WARNING: We recommend using a newer Android Gradle plugin to use compileSdk = 34
+
+This Android Gradle plugin (8.1.0) was tested up to compileSdk = 33 (and compileSdkPreview = "UpsideDownCakePrivacySandbox").
+
+You are strongly encouraged to update your project to use a newer
+Android Gradle plugin that has been tested with compileSdk = 34.
+
+If you are already using the latest version of the Android Gradle plugin,
+you may need to wait until a newer version with support for compileSdk = 34 is available.
+
+To suppress this warning, add/update
+    android.suppressUnsupportedCompileSdk=34
+to this project's gradle.properties.
+
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders UP-TO-DATE
+> Task :vbox-sdk:preBuild UP-TO-DATE
+> Task :vbox-sdk:preDebugBuild UP-TO-DATE
+> Task :vbox-sdk:configureNdkBuildDebug[arm64-v8a]
+> Task :vbox-sdk:buildNdkBuildDebug[arm64-v8a]
+> Task :vbox-sdk:configureNdkBuildDebug[armeabi-v7a]
+> Task :vbox-sdk:buildNdkBuildDebug[armeabi-v7a]
+> Task :vbox-sdk:mergeDebugJniLibFolders UP-TO-DATE
+> Task :vbox-sdk:mergeDebugNativeLibs UP-TO-DATE
+> Task :vbox-sdk:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :app:mergeDebugNativeLibs UP-TO-DATE
+> Task :app:stripDebugDebugSymbols UP-TO-DATE
+> Task :app:extractDebugNativeSymbolTables UP-TO-DATE
+> Task :vbox-sdk:prepareDebugArtProfile UP-TO-DATE
+> Task :app:mergeDebugArtProfile UP-TO-DATE
+> Task :vbox-sdk:compileDebugAidl UP-TO-DATE
+> Task :vbox-sdk:generateDebugResValues UP-TO-DATE
+> Task :vbox-sdk:generateDebugResources UP-TO-DATE
+> Task :vbox-sdk:packageDebugResources UP-TO-DATE
+> Task :vbox-sdk:parseDebugLocalResources UP-TO-DATE
+> Task :vbox-sdk:processDebugManifest UP-TO-DATE
+> Task :vbox-sdk:javaPreCompileDebug UP-TO-DATE
+> Task :app:desugarDebugFileDependencies UP-TO-DATE
+> Task :app:buildKotlinToolingMetadata UP-TO-DATE
+> Task :app:compileDebugAidl NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:mergeDebugNativeDebugMetadata
+> Task :app:dataBindingMergeDependencyArtifactsDebug UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :vbox-sdk:generateDebugRFile
+
+> Task :app:mergeDebugResources
+D:\pradip\NEXA-Full-ALL-FIX\app\src\main\res\values-zh-rCN\strings.xml:12:4: Multiple substitutions specified in non-positional format of string resource string/set_location. Did you mean to add the formatted="false" attribute?
+C:\Users\HP\.gradle\caches\transforms-3\833a706a0de0fbbba0e0d3a40866062b\transformed\jetified-osmdroid-android-6.1.18\res\values\values.xml:43:4: Multiple substitutions specified in non-positional format of string resource string/set_location. Did you mean to add the formatted="false" attribute?
+D:\pradip\NEXA-Full-ALL-FIX\app\src\main\res\values-zh-rTW\strings.xml:17:4: Multiple substitutions specified in non-positional format of string resource string/set_location. Did you mean to add the formatted="false" attribute?
+
+> Task :vbox-sdk:compileDebugJavaWithJavac
+The following annotation processors are not incremental: compiler-1.1.2.jar (com.github.CodingGay.BlackReflection:compiler:1.1.2).
+Make sure all annotation processors are incremental to improve your build speed.
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/C:/Users/HP/.gradle/wrapper/dists/gradle-8.5-bin/5t9huq95ubn472n8rpzujfbqh/gradle-8.5/lib/native-platform-0.22-milestone-25.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+warning: [options] source value 8 is obsolete and will be removed in a future release
+warning: [options] target value 8 is obsolete and will be removed in a future release
+warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+3 warnings
+
+> Task :vbox-sdk:lsparanoidDebug
+> Task :vbox-sdk:bundleLibRuntimeToJarDebug
+> Task :app:packageDebugResources
+> Task :app:generateDebugBuildConfig
+> Task :vbox-sdk:writeDebugAarMetadata
+> Task :app:mapDebugSourceSetPaths
+> Task :app:parseDebugLocalResources
+> Task :app:checkDebugAarMetadata
+> Task :app:dataBindingGenBaseClassesDebug
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug
+> Task :vbox-sdk:extractDeepLinksDebug
+
+> Task :app:processDebugMainManifest
+D:\pradip\NEXA-Full-ALL-FIX\app\src\main\AndroidManifest.xml Warning:
+	Namespace 'com.nexa.awesome' is used in multiple modules and/or libraries: AndroidManifest.xml, :vbox-sdk. Please ensure that all modules and libraries have a unique namespace. For more information, See https://developer.android.com/studio/build/configure-app-module#set-namespace
+[:vbox-sdk] D:\pradip\NEXA-Full-ALL-FIX\vbox-sdk\build\intermediates\merged_manifest\debug\AndroidManifest.xml:83:5-85 Warning:
+	Element uses-permission#com.android.launcher.permission.READ_SETTINGS at [:vbox-sdk] AndroidManifest.xml:83:5-85 duplicated with element declared at [:vbox-sdk] AndroidManifest.xml:71:5-85
+[:vbox-sdk] D:\pradip\NEXA-Full-ALL-FIX\vbox-sdk\build\intermediates\merged_manifest\debug\AndroidManifest.xml:93:5-81 Warning:
+	Element uses-permission#com.htc.launcher.permission.READ_SETTINGS at [:vbox-sdk] AndroidManifest.xml:93:5-81 duplicated with element declared at [:vbox-sdk] AndroidManifest.xml:74:5-81
+[:vbox-sdk] D:\pradip\NEXA-Full-ALL-FIX\vbox-sdk\build\intermediates\merged_manifest\debug\AndroidManifest.xml:95:5-82 Warning:
+	Element uses-permission#com.oppo.launcher.permission.READ_SETTINGS at [:vbox-sdk] AndroidManifest.xml:95:5-82 duplicated with element declared at [:vbox-sdk] AndroidManifest.xml:67:5-82
+[:vbox-sdk] D:\pradip\NEXA-Full-ALL-FIX\vbox-sdk\build\intermediates\merged_manifest\debug\AndroidManifest.xml:99:5-92 Warning:
+	Element uses-permission#com.huawei.android.launcher.permission.READ_SETTINGS at [:vbox-sdk] AndroidManifest.xml:99:5-92 duplicated with element declared at [:vbox-sdk] AndroidManifest.xml:81:5-92
+[:vbox-sdk] D:\pradip\NEXA-Full-ALL-FIX\vbox-sdk\build\intermediates\merged_manifest\debug\AndroidManifest.xml:100:5-91 Warning:
+	Element uses-permission#com.huawei.android.launcher.permission.CHANGE_BADGE at [:vbox-sdk] AndroidManifest.xml:100:5-91 duplicated with element declared at [:vbox-sdk] AndroidManifest.xml:80:5-91
+[:vbox-sdk] D:\pradip\NEXA-Full-ALL-FIX\vbox-sdk\build\intermediates\merged_manifest\debug\AndroidManifest.xml:107:5-65 Warning:
+	Element uses-permission#android.permission.CAMERA at [:vbox-sdk] AndroidManifest.xml:107:5-65 duplicated with element declared at [:vbox-sdk] AndroidManifest.xml:104:5-65
+[:vbox-sdk] D:\pradip\NEXA-Full-ALL-FIX\vbox-sdk\build\intermediates\merged_manifest\debug\AndroidManifest.xml:300:5-81 Warning:
+	Element uses-permission#android.permission.PROCESS_OUTGOING_CALLS at [:vbox-sdk] AndroidManifest.xml:300:5-81 duplicated with element declared at [:vbox-sdk] AndroidManifest.xml:290:5-81
+[:vbox-sdk] D:\pradip\NEXA-Full-ALL-FIX\vbox-sdk\build\intermediates\merged_manifest\debug\AndroidManifest.xml:302:5-69 Warning:
+	Element uses-permission#android.permission.CALL_PHONE at [:vbox-sdk] AndroidManifest.xml:302:5-69 duplicated with element declared at [:vbox-sdk] AndroidManifest.xml:288:5-69
+[:vbox-sdk] D:\pradip\NEXA-Full-ALL-FIX\vbox-sdk\build\intermediates\merged_manifest\debug\AndroidManifest.xml:317:5-319:47 Warning:
+	Element uses-permission#android.permission.GET_INTENT_SENDER_INTENT at [:vbox-sdk] AndroidManifest.xml:317:5-319:47 duplicated with element declared at [:vbox-sdk] AndroidManifest.xml:223:5-225:47
+[:vbox-sdk] D:\pradip\NEXA-Full-ALL-FIX\vbox-sdk\build\intermediates\merged_manifest\debug\AndroidManifest.xml:335:5-78 Warning:
+	Element uses-permission#android.permission.PACKAGE_USAGE_STATS at [:vbox-sdk] AndroidManifest.xml:335:5-78 duplicated with element declared at [:vbox-sdk] AndroidManifest.xml:267:5-269:47
+
+> Task :app:processDebugManifest
+> Task :app:javaPreCompileDebug
+> Task :app:mergeDebugShaders
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :vbox-sdk:bundleLibCompileToJarDebug
+> Task :vbox-sdk:compileDebugLibraryResources
+> Task :vbox-sdk:mergeDebugShaders
+> Task :vbox-sdk:compileDebugShaders NO-SOURCE
+> Task :vbox-sdk:generateDebugAssets UP-TO-DATE
+> Task :vbox-sdk:packageDebugAssets
+> Task :vbox-sdk:bundleLibRuntimeToDirDebug
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugAssets
+> Task :app:compressDebugAssets
+> Task :vbox-sdk:processDebugJavaRes
+> Task :app:collectDebugDependencies
+> Task :app:sdkDebugDependencyData
+> Task :app:validateSigningDebug
+> Task :app:writeDebugAppMetadata
+> Task :app:writeDebugSigningConfigVersions
+> Task :vbox-sdk:stripDebugDebugSymbols
+> Task :vbox-sdk:extractDebugAnnotations
+> Task :vbox-sdk:extractDeepLinksForAarDebug UP-TO-DATE
+> Task :vbox-sdk:mergeDebugGeneratedProguardFiles UP-TO-DATE
+> Task :vbox-sdk:mergeDebugConsumerProguardFiles
+> Task :vbox-sdk:prepareLintJarForPublish UP-TO-DATE
+> Task :vbox-sdk:copyDebugJniLibsProjectAndLocalJars
+> Task :app:processDebugManifestForPackage
+> Task :vbox-sdk:mergeDebugJavaResource
+> Task :vbox-sdk:syncDebugLibJars
+> Task :vbox-sdk:bundleDebugAar
+> Task :vbox-sdk:assembleDebug
+> Task :app:mergeExtDexDebug
+> Task :app:processDebugResources
+> Task :app:optimizeDebugResources
+
+> Task :app:compileDebugKotlin
+w: file:///D:/pradip/NEXA-Full-ALL-FIX/app/src/main/java/com/nexa/awesome/util/ObbCopyHelper.kt:12:22 Parameter 'context' is never used
+w: file:///D:/pradip/NEXA-Full-ALL-FIX/app/src/main/java/com/nexa/awesome/util/ObbCopyHelper.kt:96:16 Parameter 'context' is never used
+w: file:///D:/pradip/NEXA-Full-ALL-FIX/app/src/main/java/com/nexa/awesome/view/fake/FollowMyLocationOverlay.kt:50:20 'getParcelableExtra(String!): T?' is deprecated. Deprecated in Java
+w: file:///D:/pradip/NEXA-Full-ALL-FIX/app/src/main/java/com/nexa/awesome/view/main/MainActivity.kt:97:65 Parameter 'success' is never used, could be renamed to _
+w: file:///D:/pradip/NEXA-Full-ALL-FIX/app/src/main/java/com/nexa/awesome/view/main/MainActivity.kt:275:17 'startActivityForResult(Intent, Int): Unit' is deprecated. Deprecated in Java
+w: file:///D:/pradip/NEXA-Full-ALL-FIX/app/src/main/java/com/nexa/awesome/view/main/MainActivity.kt:291:17 'startActivityForResult(Intent, Int): Unit' is deprecated. Deprecated in Java
+w: file:///D:/pradip/NEXA-Full-ALL-FIX/app/src/main/java/com/nexa/awesome/view/setting/CameraActivity.kt:219:37 Parameter 'mp' is never used, could be renamed to _
+
+> Task :app:compileDebugJavaWithJavac
+warning: [options] source value 8 is obsolete and will be removed in a future release
+warning: [options] target value 8 is obsolete and will be removed in a future release
+warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.
+3 warnings
+
+> Task :app:lsparanoidDebug
+> Task :app:dexBuilderDebug
+> Task :app:processDebugJavaRes
+> Task :app:mergeDebugGlobalSynthetics
+> Task :app:mergeDexDebug
+> Task :app:compileDebugArtProfile
+> Task :app:mergeDebugJavaResource
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.5/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 39s
+83 actionable tasks: 61 executed, 22 up-to-date

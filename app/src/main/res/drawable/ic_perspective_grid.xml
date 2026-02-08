@@ -1,0 +1,36 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+    
+    <!-- Horizon Line (Red) -->
+    <path
+        android:pathData="M0,50 L100,50"
+        android:strokeColor="#80FF1744"
+        android:strokeWidth="0.5"/>
+
+    <!-- Vertical Vanishing Lines (Top - Red) -->
+    <path
+        android:pathData="M50,50 L0,0 M50,50 L25,0 M50,50 L50,0 M50,50 L75,0 M50,50 L100,0"
+        android:strokeColor="#60FF1744"
+        android:strokeWidth="0.5"/>
+
+    <!-- Vertical Vanishing Lines (Bottom - Red) -->
+    <path
+        android:pathData="M50,50 L0,100 M50,50 L25,100 M50,50 L50,100 M50,50 L75,100 M50,50 L100,100"
+        android:strokeColor="#60FF1744"
+        android:strokeWidth="0.5"/>
+        
+    <!-- Horizontal Perspective Lines (Red) -->
+    <path
+        android:pathData="M10,60 L90,60 M0,70 L100,70 M-10,80 L110,80 M-20,95 L120,95"
+        android:strokeColor="#15FF1744"
+        android:strokeWidth="0.5"/>
+        
+     <path
+        android:pathData="M10,40 L90,40 M0,30 L100,30 M-10,20 L110,20 M-20,5 L120,5"
+        android:strokeColor="#15FF1744"
+        android:strokeWidth="0.5"/>
+
+</vector>

@@ -1,0 +1,52 @@
+package top.niunaijun.blackbox.utils;
+
+import android.util.Log;
+import java.io.File;
+import top.niunaijun.blackbox.utils.FileUtils;
+import top.niunaijun.blackbox.core.env.BEnvironment;
+import top.niunaijun.blackbox.app.BActivityThread;
+
+public class FixCrashHelper {
+    private static final String TAG = "FixCrashHelper";
+
+    public static void tryApply(String packageName) {
+        if ("com.pubg.imobile".equals(packageName) || "com.pubg.krmobile".equals(packageName) || "com.pubg.newstate".equals(packageName) || "com.tencent.ig".equals(packageName)) {
+            try {
+                int userId = BActivityThread.getUserId();
+                File internalBase = BEnvironment.getDataFilesDir(packageName, userId).getParentFile();// Internal sandbox (com.vspace path)
+               // File externalBase = BEnvironment.getExternalDataDir(packageName); // External SDCard
+                applyFix(internalBase);
+                //applyFix(externalBase);
+                Log.i(TAG, "Crash fix applied for " + packageName);
+            } catch (Throwable t) {
+                Log.e(TAG, "Crash fix failed", t);
+            }
+        }
+    }
+
+    private static void applyFix(File base) {
+        if (base == null) return;
+        block(new File(base, "files/obblib"));
+        block(new File(base, "files/xlog"));
+        block(new File(base, "app_bugly"));
+        block(new File(base, "app_crashrecord"));
+        block(new File(base, "app_crashSight"));
+        block(new File(base, "files/ano_tmp"));
+    }
+
+    private static void block(File file) {
+        try {
+            if (file.exists()) {
+                if (file.isDirectory()) {
+                    FileUtils.deleteDir(file);
+                } else {
+                    file.delete();
+                }
+            }
+            file.createNewFile();
+            FileUtils.chmod(file.getAbsolutePath(), 0);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to block " + file.getAbsolutePath(), e);
+        }
+    }
+}
