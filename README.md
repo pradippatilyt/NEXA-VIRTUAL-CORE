@@ -20,19 +20,13 @@ An Android Injector aimed to inject through Virtual Space without root permissio
 5. Click "Inject," and the app should launch.
 
 ## Credits
-NewBlackbox by @jagdish_vip : [GitHub](https://github.com/jagdishvip/NewBlackbox) <br />
+NexaCoreEngine pradip yt
 
 ## Contributions
 Contributions are welcome to help improve this project! If you’re interested in adding features or enhancing functionality, feel free to submit a pull request or open an issue to discuss your ideas.
 
 ## Limitations
 The injector is not compatible with games protected by anti-cheat mechanisms.
-
-## Contact
-For any questions, collaboration requests, or updates, feel free to reach out via:
-- **Telegram Channel**: [Join Channel](https://t.me/VIP_SRC_LEEKAR) <br>
-- **Telegram Contact**: [Contact Me](https://t.me/VIP_SRC_LEEKAR) <br>
-- **Email**: [contact@reveny.me](mailto:contact@jagdishjatav.me) <br>
 
 ## Support Me
 If you'd like to support me, you can do so on [Patreon](https://www.patreon.com/c/Reveny)
